@@ -1,0 +1,99 @@
+
+
+#include <SoftwareSerial.h> 
+#include <String.h> 
+
+SoftwareSerial mySerial(7, 8); 
+
+
+void setup()
+{
+  mySerial.begin(19200);               
+  Serial.begin(19200);    
+}
+
+ 
+void loop()
+{        
+   delay(2);          
+     GPRS(); 
+   
+  if (mySerial.available())
+    Serial.write(mySerial.read());
+}
+void GPRS()
+{
+  mySerial.println("AT");
+  delay(1000);
+  mySerial.println("AT+CPIN?"); 
+  delay(1000);
+  mySerial.print("AT+CREG?");
+  delay(1000);
+  mySerial.print("AT+CGATT?");
+  delay(1000);
+  mySerial.println("AT+CIPSHUT");
+  delay(1000);
+  Serial.print("ESTADO DE LA CONEXION -RESPUESTA- ");
+  mySerial.println("AT+CIPSTATUS");
+  delay(2000);
+  mySerial.println("AT+CIPMUX=0");
+  delay(2000);
+  MostrarDatos();
+  Serial.print("    APN: ");
+  mySerial.println("AT+CSTT=\"bam.entelpcs.cl\",\"entelpcs\",\"entelpcs\"");
+  delay(1000);
+ 
+  MostrarDatos();
+  Serial.println("ESTADO DE CONEXION GPRS: ");
+  mySerial.println("AT+CIICR");
+  delay(3000);
+ 
+  MostrarDatos();
+  Serial.println("DIRECCION IP LOCAL: ");
+  mySerial.println("AT+CIFSR");
+  delay(2000);
+ 
+  MostrarDatos();
+ 
+  mySerial.println("AT+CIPSPRT=0");
+  delay(3000);
+ 
+  MostrarDatos();
+  Serial.println("CONEXION TCP: ");
+  mySerial.println("AT+CIPSTART=\"TCP\",\"api.thingspeak.com\",\"80\"");
+  delay(6000);
+ 
+  MostrarDatos();
+  Serial.println("     ENVIO DE DATOS A TRAVES DE LA CONEXION TCP: ");
+  mySerial.println("AT+CIPSEND");
+  delay(4000);
+  MostrarDatos();
+ 
+
+    
+    
+  String str="GET http://api.thingspeak.com/update?api_key=NIRMKFFOOB8LP38E&field1="+temp +"&field2="+wilg; 
+
+    
+  mySerial.println(str);
+  delay(4000);
+  MostrarDatos();
+
+  mySerial.println((char)26); 
+  delay(5000);
+  mySerial.println();
+ 
+  MostrarDatos();
+ 
+  mySerial.println("AT+CIPSHUT");
+  delay(100);
+  MostrarDatos();
+
+} 
+
+void MostrarDatos()
+{
+  while(mySerial.available()!=0)
+    Serial.write(mySerial.read());
+    delay(0); 
+}

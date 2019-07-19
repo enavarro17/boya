@@ -1,0 +1,24 @@
+/*
+ * Medidor de PH
+ */
+
+int ph_pin = A0; //This is the pin number connected to Po
+
+void setup() {
+  Serial.begin(9600);
+  Serial.println("- Medidor PH -");
+  Serial.println(" ");
+  }
+
+void loop() {
+  int measure = analogRead(ph_pin);
+
+  double voltage = 5 / 1024.0 * measure; //classic digital to voltage conversion
+
+  float Po = 7 + ((2.5 - voltage) / 0.18);
+  Serial.print("PH: ");
+  Serial.print(Po, 2);
+
+  Serial.println("");
+  delay(2000);
+}

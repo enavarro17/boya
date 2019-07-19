@@ -1,0 +1,31 @@
+#include <SoftwareSerial.h>
+
+SoftwareSerial SIM900(7, 8); // Configura el puerto serial para el SIM900
+
+void setup()
+{
+  //digitalWrite(9, HIGH);   // Descomentar para activar la alimentación de la tarjeta por Software
+  //delay(1000);             
+  //digitalWrite(9, LOW);
+  SIM900.begin(19200); //Configura velocidad del puerto serie para el SIM900
+  Serial.begin(19200); //Configura velocidad del puerto serie del Arduino
+  Serial.println("OK");
+  SIM900.println("AT+CPIN=\"XXXX\""); //Comando AT para introducir el PIN de la tarjeta
+  delay(25000); //Tiempo para que encuentre una RED
+}
+
+void llamar()
+{
+  Serial.println("Realizando llamada...");
+  SIM900.println("ATD945524171;"); //Comando AT para realizar una llamada
+  delay(20000); // Espera 20 segundos mientras realiza la llamada
+  SIM900.println("ATH"); // Cuelga la llamada
+  delay(1000);
+  Serial.println("Llamada finalizada");
+}
+
+void loop()
+{
+  llamar(); //Realiza la llamada
+  while (1);
+}
